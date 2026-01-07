@@ -13,14 +13,34 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+
   @override
   void initState() {
     super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeIn,
+    );
+    _animationController.forward();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final historyProvider = context.read<ReadingHistoryProvider>();
       historyProvider.loadHistoryForYear(DateTime.now().year);
     });
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   String _getEncouragementIcon(double progress) {
@@ -42,214 +62,441 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Color _getProgressColor(double progress) {
-    if (progress >= 100) return Colors.red;
-    if (progress >= 80) return Colors.purple;
-    if (progress >= 60) return Colors.amber;
-    if (progress >= 40) return Colors.orange;
-    if (progress >= 20) return Colors.green;
-    return Colors.blue;
+    if (progress >= 100) return Colors.red.shade400;
+    if (progress >= 80) return Colors.purple.shade400;
+    if (progress >= 60) return Colors.amber.shade400;
+    if (progress >= 40) return Colors.orange.shade400;
+    if (progress >= 20) return Colors.green.shade400;
+    return Colors.blue.shade400;
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // 반응형 크기 계산
+    final isSmallScreen = screenWidth < 360;
+    final titleFontSize = isSmallScreen ? 20.0 : 24.0;
+    final circleSize = screenWidth * 0.45 < 160 ? 160.0 : screenWidth * 0.45;
+    final horizontalPadding = screenWidth * 0.05;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('함께 성경 읽기'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const SettingsScreen()),
-              );
-            },
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          SliverAppBar(
+            expandedHeight: screenHeight * 0.12,
+            floating: false,
+            pinned: true,
+            elevation: 0,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(
+                '함께 성경 읽기',
+                style: TextStyle(
+                  fontSize: titleFontSize,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                ),
+              ),
+              centerTitle: true,
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.settings_outlined,
+                    color: Theme.of(context).textTheme.bodyLarge?.color),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                  );
+                },
+              ),
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: Consumer<ReadingHistoryProvider>(
+                builder: (context, historyProvider, child) {
+                  final year = historyProvider.currentYear;
+                  final totalDays = DateHelper.getTotalDaysInYear(year);
+                  final completedDays = historyProvider.getCompletedCount(year);
+                  final uncompletedDays =
+                      historyProvider.getUncompletedCount(year);
+                  final streakDays = historyProvider.getStreakDays(year);
+                  final progress = historyProvider.getProgressPercentage(year);
+
+                  return Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: horizontalPadding,
+                      vertical: 16,
+                    ),
+                    child: Column(
+                      children: [
+                        // 년도 표시
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.05,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                _getProgressColor(progress).withOpacity(0.2),
+                                _getProgressColor(progress).withOpacity(0.1),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: FittedBox(
+                            child: Text(
+                              '📅 ${year}년 성경 통독',
+                              style: TextStyle(
+                                fontSize: isSmallScreen ? 16 : 20,
+                                fontWeight: FontWeight.bold,
+                                color: _getProgressColor(progress),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: screenHeight * 0.03),
+
+                        // 진행 현황 카드
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: isDark
+                                  ? [Colors.grey.shade900, Colors.grey.shade800]
+                                  : [Colors.white, Colors.grey.shade50],
+                            ),
+                            borderRadius: BorderRadius.circular(24),
+                            boxShadow: [
+                              BoxShadow(
+                                color: _getProgressColor(progress)
+                                    .withOpacity(0.3),
+                                blurRadius: 20,
+                                offset: const Offset(0, 10),
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.05),
+                            child: Column(
+                              children: [
+                                Text(
+                                  '📊 진행 현황',
+                                  style: TextStyle(
+                                    fontSize: isSmallScreen ? 16 : 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.color,
+                                  ),
+                                ),
+                                SizedBox(height: screenHeight * 0.02),
+
+                                // 원형 프로그레스
+                                SizedBox(
+                                  width: circleSize,
+                                  height: circleSize,
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: circleSize,
+                                        height: circleSize,
+                                        child: CircularProgressIndicator(
+                                          value: progress / 100,
+                                          strokeWidth: isSmallScreen ? 10 : 12,
+                                          backgroundColor: Colors.grey.shade300,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                            _getProgressColor(progress),
+                                          ),
+                                        ),
+                                      ),
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          FittedBox(
+                                            child: Text(
+                                              '${progress.toStringAsFixed(1)}%',
+                                              style: TextStyle(
+                                                fontSize: circleSize * 0.18,
+                                                fontWeight: FontWeight.bold,
+                                                color:
+                                                    _getProgressColor(progress),
+                                              ),
+                                            ),
+                                          ),
+                                          FittedBox(
+                                            child: Text(
+                                              '$completedDays / $totalDays일',
+                                              style: TextStyle(
+                                                fontSize: circleSize * 0.08,
+                                                color: Colors.grey.shade600,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: screenHeight * 0.02),
+
+                                // 통계 - 반응형
+                                LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    return Wrap(
+                                      alignment: WrapAlignment.spaceAround,
+                                      spacing: 8,
+                                      runSpacing: 8,
+                                      children: [
+                                        _buildStatCard(
+                                          '✅',
+                                          '완료',
+                                          '$completedDays일',
+                                          Colors.green,
+                                          isDark,
+                                          isSmallScreen,
+                                        ),
+                                        _buildStatCard(
+                                          '⏳',
+                                          '남은 날',
+                                          '$uncompletedDays일',
+                                          Colors.orange,
+                                          isDark,
+                                          isSmallScreen,
+                                        ),
+                                        _buildStatCard(
+                                          '🔥',
+                                          '연속',
+                                          '$streakDays일',
+                                          Colors.red,
+                                          isDark,
+                                          isSmallScreen,
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: screenHeight * 0.02),
+
+                        // 격려 메시지
+                        Container(
+                          padding: EdgeInsets.all(screenWidth * 0.05),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                _getProgressColor(progress).withOpacity(0.15),
+                                _getProgressColor(progress).withOpacity(0.05),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                _getEncouragementIcon(progress),
+                                style: TextStyle(
+                                    fontSize: isSmallScreen ? 48 : 56),
+                              ),
+                              const SizedBox(height: 12),
+                              FittedBox(
+                                child: Text(
+                                  _getEncouragementMessage(progress),
+                                  style: TextStyle(
+                                    fontSize: isSmallScreen ? 18 : 22,
+                                    fontWeight: FontWeight.bold,
+                                    color: _getProgressColor(progress),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                '계속 이어가세요!',
+                                style: TextStyle(
+                                  fontSize: isSmallScreen ? 13 : 15,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: screenHeight * 0.03),
+
+                        // 버튼들
+                        _buildActionButton(
+                          context,
+                          icon: Icons.calendar_today_rounded,
+                          label: '오늘의 성경 읽기',
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.blue.shade400,
+                              Colors.blue.shade600
+                            ],
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const CalendarScreen(),
+                              ),
+                            );
+                          },
+                          isSmallScreen: isSmallScreen,
+                        ),
+                        const SizedBox(height: 12),
+                        _buildActionButton(
+                          context,
+                          icon: Icons.menu_book_rounded,
+                          label: '성경 66권 개요',
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.green.shade400,
+                              Colors.green.shade600
+                            ],
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const BibleBooksScreen(),
+                              ),
+                            );
+                          },
+                          isSmallScreen: isSmallScreen,
+                        ),
+                        SizedBox(height: screenHeight * 0.02),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
         ],
-      ),
-      body: Consumer<ReadingHistoryProvider>(
-        builder: (context, historyProvider, child) {
-          final year = historyProvider.currentYear;
-          final totalDays = DateHelper.getTotalDaysInYear(year);
-          final completedDays = historyProvider.getCompletedCount(year);
-          final uncompletedDays = historyProvider.getUncompletedCount(year);
-          final streakDays = historyProvider.getStreakDays(year);
-          final progress = historyProvider.getProgressPercentage(year);
-
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                // 년도 표시
-                Text(
-                  '🗓️ ${year}년 성경 통독',
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 30),
-
-                // 진행 현황 카드
-                Card(
-                  elevation: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      children: [
-                        const Text(
-                          '📊 진행 현황',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-
-                        // 프로그레스 바
-                        LinearProgressIndicator(
-                          value: progress / 100,
-                          minHeight: 20,
-                          backgroundColor: Colors.grey[300],
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            _getProgressColor(progress),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          '$completedDays / $totalDays일',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-
-                        // 통계
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            _buildStatItem('✅ 완료', '$completedDays일'),
-                            _buildStatItem('⏳ 남은 날', '$uncompletedDays일'),
-                            _buildStatItem('🔥 연속', '$streakDays일'),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 30),
-
-                // 격려 메시지
-                Card(
-                  elevation: 4,
-                  color: _getProgressColor(progress).withOpacity(0.1),
-                  child: Padding(
-                    padding: const EdgeInsets.all(30),
-                    child: Column(
-                      children: [
-                        Text(
-                          _getEncouragementIcon(progress),
-                          style: const TextStyle(fontSize: 60),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          _getEncouragementMessage(progress),
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: _getProgressColor(progress),
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        const Text(
-                          '계속 이어가세요!',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 30),
-
-                // 버튼들
-                SizedBox(
-                  width: double.infinity,
-                  height: 60,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const CalendarScreen(),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.calendar_today, size: 28),
-                    label: const Text(
-                      '오늘의 성경 읽기',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 15),
-                SizedBox(
-                  width: double.infinity,
-                  height: 60,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const BibleBooksScreen(),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.book, size: 28),
-                    label: const Text(
-                      '성경 66권 개요',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
       ),
     );
   }
 
-  Widget _buildStatItem(String label, String value) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 14,
-            color: Colors.grey,
+  Widget _buildStatCard(
+    String icon,
+    String label,
+    String value,
+    Color color,
+    bool isDark,
+    bool isSmallScreen,
+  ) {
+    return Container(
+      constraints: BoxConstraints(
+        minWidth: isSmallScreen ? 90 : 100,
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: isSmallScreen ? 12 : 16,
+        vertical: isSmallScreen ? 10 : 12,
+      ),
+      decoration: BoxDecoration(
+        color: color.withOpacity(isDark ? 0.2 : 0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: color.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(icon, style: TextStyle(fontSize: isSmallScreen ? 20 : 24)),
+          SizedBox(height: isSmallScreen ? 4 : 6),
+          FittedBox(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: isSmallScreen ? 10 : 12,
+                color: Colors.grey.shade600,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          SizedBox(height: isSmallScreen ? 2 : 4),
+          FittedBox(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: isSmallScreen ? 14 : 18,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required Gradient gradient,
+    required VoidCallback onTap,
+    required bool isSmallScreen,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: gradient,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: gradient.colors.first.withOpacity(0.4),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              vertical: isSmallScreen ? 14 : 18,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: isSmallScreen ? 24 : 28, color: Colors.white),
+                SizedBox(width: isSmallScreen ? 8 : 12),
+                Flexible(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: isSmallScreen ? 16 : 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-        const SizedBox(height: 5),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

@@ -97,13 +97,15 @@ class _BibleBooksScreenState extends State<BibleBooksScreen> {
                 return ListView(
                   children: [
                     if (oldTestament.isNotEmpty) ...[
-                      _buildSectionHeader('🔵 구약성경 (${oldTestament.length}권)'),
+                      //_buildSectionHeader('🔵 구약성경 (${oldTestament.length}권)'),
+                      _buildSectionHeader('🔵 구약성경 (39권)'),
                       ...oldTestament
                           .map((book) => _buildBookTile(book, context)),
                       const SizedBox(height: 20),
                     ],
                     if (newTestament.isNotEmpty) ...[
-                      _buildSectionHeader('🔴 신약성경 (${newTestament.length}권)'),
+                      //_buildSectionHeader('🔴 신약성경 (${newTestament.length}권)'),
+                      _buildSectionHeader('🔴 신약성경 (27권)'),
                       ...newTestament
                           .map((book) => _buildBookTile(book, context)),
                     ],

@@ -1,12 +1,74 @@
 book_number,testament,korean_name,english_name,youtube_url,author,chapters_count,summary
-1,OLD,구약개요,TaNaK/Old Testament,https://www.youtube.com/watch?v=-nbwEZJSvW0&list=PLdjM8wRcBQnmm-CLscqgP_T4dRwWqh9iZ,None,1,구약/타나크 개요
-2,OLD,창세기 1-11,Genesis 1-11,https://www.youtube.com/watch?v=dLv2ndgXrbo&list=PLdjM8wRcBQnmm-CLscqgP_T4dRwWqh9iZ&index=2,모세,50,창세기 1-11
-3,OLD,창세기 12-50,Genesis 12-50,https://www.youtube.com/watch?v=dLv2ndgXrbo&list=PLdjM8wRcBQnmm-CLscqgP_T4dRwWqh9iZ&index=3,모세,51,창세기 12-50
-4,OLD,출애굽기 1-18,Genesis 12-50,https://www.youtube.com/watch?v=PrTbYx6KbtY&list=PLdjM8wRcBQnmm-CLscqgP_T4dRwWqh9iZ&index=4,모세,51,출애굽기 1-18
-5,OLD,창세기 12-50,Genesis 12-50,https://www.youtube.com/watch?v=dLv2ndgXrbo&list=PLdjM8wRcBQnmm-CLscqgP_T4dRwWqh9iZ&index=3,모세,51,창세기 12-50
-6,OLD,창세기 12-50,Genesis 12-50,https://www.youtube.com/watch?v=dLv2ndgXrbo&list=PLdjM8wRcBQnmm-CLscqgP_T4dRwWqh9iZ&index=3,모세,51,창세기 12-50
-7,OLD,창세기 12-50,Genesis 12-50,https://www.youtube.com/watch?v=dLv2ndgXrbo&list=PLdjM8wRcBQnmm-CLscqgP_T4dRwWqh9iZ&index=3,모세,51,창세기 12-50
-8,OLD,창세기 12-50,Genesis 12-50,https://www.youtube.com/watch?v=dLv2ndgXrbo&list=PLdjM8wRcBQnmm-CLscqgP_T4dRwWqh9iZ&index=3,모세,51,창세기 12-50
-9,NEW,창세기 12-50,Genesis 12-50,https://www.youtube.com/watch?v=dLv2ndgXrbo&list=PLdjM8wRcBQnmm-CLscqgP_T4dRwWqh9iZ&index=3,모세,51,창세기 12-50
-10,NEW,창세기 12-50,Genesis 12-50,https://www.youtube.com/watch?v=dLv2ndgXrbo&list=PLdjM8wRcBQnmm-CLscqgP_T4dRwWqh9iZ&index=3,모세,51,창세기 12-50
-11,NEW,창세기 12-50,Genesis 12-50,https://www.youtube.com/watch?v=dLv2ndgXrbo&list=PLdjM8wRcBQnmm-CLscqgP_T4dRwWqh9iZ&index=3,모세,51,창세기 12-50
+1,OLD,구약/타나크 개요,TaNaK/Old Testament,https://www.youtube.com/watch?v=-nbwEZJSvW0,None,0,구약/타나크 개요
+2,OLD,창세기 1-11,Genesis 1-11,https://www.youtube.com/watch?v=dLv2ndgXrbo,모세,11,창세기 1-11
+3,OLD,창세기 12-50,Genesis 12-50,https://www.youtube.com/watch?v=p4Oh-rbc9rE,모세,39,창세기 12-50
+4,OLD,출애굽기 1-18,Exodus 1-18,https://www.youtube.com/watch?v=PrTbYx6KbtY,모세,18,출애굽기 1-18
+5,OLD,출애굽기 19-40,Exodus 19-40,https://www.youtube.com/watch?v=ze0bIlO5p1w,모세,22,출애굽기 19-40
+6,OLD,레위기,Leviticus,https://www.youtube.com/watch?v=OUPcm3QGt7Y,모세,27,레위기
+7,OLD,민수기,Numbers,https://www.youtube.com/watch?v=Q0Lac54urBU,모세,36,민수기
+8,OLD,신명기,Deuteronomy,https://www.youtube.com/watch?v=HOA8818FdYc,모세,34,신명기
+9,OLD,여호수아,Joshua,https://www.youtube.com/watch?v=9MmKvOItPds,여호수아,24,여호수아
+10,OLD,사사기,Judges,https://www.youtube.com/watch?v=2rnPxn2aeN0,사무엘(전통),21,사사기
+11,OLD,룻기,Ruth,https://www.youtube.com/watch?v=jB2au0FGgjo,사무엘(전통),4,룻기
+12,OLD,사무엘상,1 Samuel,https://www.youtube.com/watch?v=gZ9Jf2FeZJQ,사무엘 외 선지자들,31,사무엘상
+13,OLD,사무엘하,2 Samuel,https://www.youtube.com/watch?v=QYuSYPIfFPA,사무엘 외 선지자들,24,사무엘하
+14,OLD,열왕기상하,1-2 Kings,https://www.youtube.com/watch?v=jIcsdztsKBE,예레미야(전통),47,열왕기상하
+15,OLD,역대상하,1-2 Chronicles,https://www.youtube.com/watch?v=AgRvk1qOAgg,에스라(전통),65,역대상하
+16,OLD,에스라-느헤미야,Ezra-Nehemiah,https://www.youtube.com/watch?v=IxHJN4cOl-c,에스라(전통),23,에스라-느헤미야
+17,OLD,에스더,Esther,https://www.youtube.com/watch?v=e4rGAPgtBbc,미상,10,에스더
+18,OLD,욥기,Job,https://www.youtube.com/watch?v=SoOSMWGuDxk,미상,42,욥기
+19,OLD,시편,Psalms,https://www.youtube.com/watch?v=amAZ8ewil7g,다윗 외 여러 저자,150,시편
+20,OLD,잠언,Proverbs,https://www.youtube.com/watch?v=WPAs3uHoPDI,솔로몬 외,31,잠언
+21,OLD,전도서,Ecclesiastes,https://www.youtube.com/watch?v=8bnFXIKuq3U,솔로몬,12,전도서
+22,OLD,아가,Song of Songs,https://www.youtube.com/watch?v=jLA7P-L9NgU,솔로몬,8,아가
+23,OLD,이사야 1-39,Isaiah 1-39,https://www.youtube.com/watch?v=b0-A9qEu5ug,이사야,39,이사야 1-39
+24,OLD,이사야 40-66,Isaiah 40-66,https://www.youtube.com/watch?v=592AmPSM2P8,이사야,27,이사야 40-66
+25,OLD,예레미야,Jeremiah,https://www.youtube.com/watch?v=ErL1bUKQIIY,예레미야,52,예레미야
+26,OLD,예레미야애가,Lamentations,https://www.youtube.com/watch?v=twumxE5HxYU,예레미야,5,예레미야애가
+27,OLD,에스겔 1-33,Ezekiel 1-33,https://www.youtube.com/watch?v=IO9XplZBcvk,에스겔,33,에스겔 1-33
+28,OLD,에스겔 34-48,Ezekiel 34-48,https://www.youtube.com/watch?v=T_dn5VhU73E,에스겔,15,에스겔 34-48
+29,OLD,다니엘,Daniel,https://www.youtube.com/watch?v=clI5OYY4lVo,다니엘,12,다니엘
+30,OLD,호세아,Hosea,https://www.youtube.com/watch?v=M669lzWgN5k,호세아,14,호세아
+31,OLD,요엘,Joel,https://www.youtube.com/watch?v=4ucQjbVb4oE,요엘,3,요엘
+32,OLD,아모스,Amos,https://www.youtube.com/watch?v=FOH4qvNr9O8,아모스,9,아모스
+33,OLD,오바댜,Obadiah,https://www.youtube.com/watch?v=znmT4B8j4xA,오바댜,1,오바댜
+34,OLD,요나,Jonah,https://www.youtube.com/watch?v=P6bSRsI4rY0,요나,4,요나
+35,OLD,미가,Micah,https://www.youtube.com/watch?v=cES-IDPeU4E,미가,7,미가
+36,OLD,나훔,Nahum,https://www.youtube.com/watch?v=qhJQqrm2pUw,나훔,3,나훔
+37,OLD,하박국,Habakkuk,https://www.youtube.com/watch?v=BRbdfL0u4hQ,하박국,3,하박국
+38,OLD,스바냐,Zephaniah,https://www.youtube.com/watch?v=WWIQaLlsCjo,스바냐,3,스바냐
+39,OLD,학개,Haggai,https://www.youtube.com/watch?v=j-S26FNz_XY,학개,2,학개
+40,OLD,스가랴,Zechariah,https://www.youtube.com/watch?v=l8CdmoLKq3E,스가랴,14,스가랴
+41,OLD,말라기,Malachi,https://www.youtube.com/watch?v=KxJb21AxVqI,말라기,4,말라기
+42,NEW,신약 개요,New Testament,https://www.youtube.com/watch?v=K801qW6Easc,None,0,신약 개요
+43,NEW,마태복음 1-13,Matthew 1-13,https://www.youtube.com/watch?v=cbabreYd34Q,마태,13,마태복음 1-13
+44,NEW,마태복음 14-28,Matthew 14-28,https://www.youtube.com/watch?v=Va-eFIztMxU,마태,15,마태복음 14-28
+45,NEW,마가복음,Mark,https://www.youtube.com/watch?v=hKtkrVwvFoo,마가,16,마가복음
+46,NEW,누가복음 1-9,Luke 1-9,https://www.youtube.com/watch?v=szex2l67GwQ,누가,9,누가복음 1-9
+47,NEW,누가복음 10-24,Luke 10-24,https://www.youtube.com/watch?v=FJ2cCWKxgfM,누가,15,누가복음 10-24
+48,NEW,요한복음 1-12,John 1-12,https://www.youtube.com/watch?v=FV55I_rX4Kg,요한,12,요한복음 1-12
+49,NEW,요한복음 13-21,John 13-21,https://www.youtube.com/watch?v=bVRSuGbY5-s,요한,9,요한복음 13-21
+50,NEW,사도행전 1-12,Acts 1-12,https://www.youtube.com/watch?v=kOCqsPst9Ag,누가,12,사도행전 1-12
+51,NEW,사도행전 13-28,Acts 13-28,https://www.youtube.com/watch?v=_rJ89EhnwSQ,누가,16,사도행전 13-28
+52,NEW,로마서 1-4,Romans 1-4,https://www.youtube.com/watch?v=PT4C0ley074,바울,4,로마서 1-4
+53,NEW,로마서 5-16,Romans 5-16,https://www.youtube.com/watch?v=k5i6Dk-afp0,바울,12,로마서 5-16
+54,NEW,고린도전서,1 Corinthians,https://www.youtube.com/watch?v=SoxLSx5DOjg,바울,16,고린도전서
+55,NEW,고린도후서,2 Corinthians,https://www.youtube.com/watch?v=xZFXdP7CCcc,바울,13,고린도후서
+56,NEW,갈라디아서,Galatians,https://www.youtube.com/watch?v=IRaMP5i4ROc,바울,6,갈라디아서
+57,NEW,에베소서,Ephesians,https://www.youtube.com/watch?v=1Cvb3mjw7WQ,바울,6,에베소서
+58,NEW,빌립보서,Philippians,https://www.youtube.com/watch?v=P2stOv4EuD8,바울,4,빌립보서
+59,NEW,골로새서,Colossians,https://www.youtube.com/watch?v=PToo8H3ESmI,바울,4,골로새서
+60,NEW,데살로니가전서,1 Thessalonians,https://www.youtube.com/watch?v=78mjPkm3gNU,바울,5,데살로니가전서
+61,NEW,데살로니가후서,2 Thessalonians,https://www.youtube.com/watch?v=aSvUcBhd4hQ,바울,3,데살로니가후서
+62,NEW,디모데전서,1 Timothy,https://www.youtube.com/watch?v=TPaaXttsgzY,바울,6,디모데전서
+63,NEW,디모데후서,2 Timothy,https://www.youtube.com/watch?v=2rbLGN90JyE,바울,4,디모데후서
+64,NEW,디도서,Titus,https://www.youtube.com/watch?v=tdTrkbn8plI,바울,3,디도서
+65,NEW,빌레몬서,Philemon,https://www.youtube.com/watch?v=FF52ylLRH3g,바울,1,빌레몬서
+66,NEW,히브리서,Hebrews,https://www.youtube.com/watch?v=_y4X0Y1nu5E,미상(바울설 등),13,히브리서
+67,NEW,야고보서,James,https://www.youtube.com/watch?v=PKic-DpY3O4,야고보,5,야고보서
+68,NEW,베드로전서,1 Peter,https://www.youtube.com/watch?v=5te24c_61aI,베드로,5,베드로전서
+69,NEW,베드로후서,2 Peter,https://www.youtube.com/watch?v=Ii-v2hGv-zk,베드로,3,베드로후서
+70,NEW,요한1-3서,1-3 John,https://www.youtube.com/watch?v=cMKPbDZhToo,요한,3,요한1-3서
+71,NEW,유다서,Jude,https://www.youtube.com/watch?v=ggYH-spyKHY,유다,1,유다서
+72,NEW,요한계시록 1-11,Revelation 1-11,https://www.youtube.com/watch?v=ue4ZFykrMJ8,요한,11,요한계시록 1-11
+73,NEW,요한계시록 12-22,Revelation 12-22,https://www.youtube.com/watch?v=TV36boVNZOk,요한,11,요한계시록 12-22

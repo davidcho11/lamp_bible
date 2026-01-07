@@ -31,152 +31,286 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('성경 읽기 캘린더'),
-      ),
-      body: Column(
-        children: [
-          Consumer2<ReadingHistoryProvider, BibleReadingProvider>(
-            builder: (context, historyProvider, readingProvider, child) {
-              return TableCalendar(
-                firstDay: DateTime(_focusedDay.year, 1, 1),
-                lastDay: DateTime(_focusedDay.year, 12, 31),
-                focusedDay: _focusedDay,
-                calendarFormat: _calendarFormat,
-                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                onDaySelected: (selectedDay, focusedDay) async {
-                  if (!isSameDay(_selectedDay, selectedDay)) {
-                    setState(() {
-                      _selectedDay = selectedDay;
-                      _focusedDay = focusedDay;
-                    });
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 100,
+            floating: false,
+            pinned: true,
+            elevation: 0,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios_rounded,
+                  color: Theme.of(context).textTheme.bodyLarge?.color),
+              onPressed: () => Navigator.pop(context),
+            ),
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(
+                '성경 읽기 캘린더',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                ),
+              ),
+              centerTitle: true,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                Container(
+                  margin: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.grey.shade900 : Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blue.shade200.withOpacity(0.3),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child:
+                      Consumer2<ReadingHistoryProvider, BibleReadingProvider>(
+                    builder:
+                        (context, historyProvider, readingProvider, child) {
+                      return TableCalendar(
+                        firstDay: DateTime(_focusedDay.year, 1, 1),
+                        lastDay: DateTime(_focusedDay.year, 12, 31),
+                        focusedDay: _focusedDay,
+                        calendarFormat: _calendarFormat,
+                        selectedDayPredicate: (day) =>
+                            isSameDay(_selectedDay, day),
+                        onDaySelected: (selectedDay, focusedDay) async {
+                          if (!isSameDay(_selectedDay, selectedDay)) {
+                            setState(() {
+                              _selectedDay = selectedDay;
+                              _focusedDay = focusedDay;
+                            });
 
-                    // 날짜 상세 화면으로 이동
-                    final reading = await readingProvider.getReadingByDate(
-                      selectedDay.month,
-                      selectedDay.day,
-                    );
+                            final reading =
+                                await readingProvider.getReadingByDate(
+                              selectedDay.month,
+                              selectedDay.day,
+                            );
 
-                    if (mounted) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ReadingDetailScreen(
-                            year: selectedDay.year,
-                            month: selectedDay.month,
-                            day: selectedDay.day,
-                            reading: reading,
+                            if (mounted) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ReadingDetailScreen(
+                                    year: selectedDay.year,
+                                    month: selectedDay.month,
+                                    day: selectedDay.day,
+                                    reading: reading,
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        onFormatChanged: (format) {
+                          if (_calendarFormat != format) {
+                            setState(() {
+                              _calendarFormat = format;
+                            });
+                          }
+                        },
+                        onPageChanged: (focusedDay) {
+                          _focusedDay = focusedDay;
+                        },
+                        calendarStyle: CalendarStyle(
+                          cellMargin: const EdgeInsets.all(6),
+                          todayDecoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.orange.shade300,
+                                Colors.orange.shade400,
+                              ],
+                            ),
+                            shape: BoxShape.circle,
+                          ),
+                          selectedDecoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.blue.shade400,
+                                Colors.blue.shade600,
+                              ],
+                            ),
+                            shape: BoxShape.circle,
+                          ),
+                          todayTextStyle: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          selectedTextStyle: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          defaultTextStyle: TextStyle(
+                            color: isDark ? Colors.white : Colors.black,
+                          ),
+                          weekendTextStyle: TextStyle(
+                            color: Colors.red.shade300,
+                          ),
+                        ),
+                        daysOfWeekStyle: DaysOfWeekStyle(
+                          weekdayStyle: TextStyle(
+                            color: isDark
+                                ? Colors.grey.shade400
+                                : Colors.grey.shade700,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          weekendStyle: TextStyle(
+                            color: Colors.red.shade300,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        calendarBuilders: CalendarBuilders(
+                          markerBuilder: (context, date, events) {
+                            final isCompleted = historyProvider.isCompleted(
+                              date.year,
+                              date.month,
+                              date.day,
+                            );
+
+                            final isToday = DateHelper.isToday(
+                              date.year,
+                              date.month,
+                              date.day,
+                            );
+
+                            if (date.month == 2 && date.day == 29) {
+                              if (DateHelper.isLeapYear(date.year)) {
+                                return Positioned(
+                                  right: 4,
+                                  bottom: 4,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(2),
+                                    decoration: BoxDecoration(
+                                      color: Colors.purple.shade100,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Text('🎵',
+                                        style: TextStyle(fontSize: 12)),
+                                  ),
+                                );
+                              }
+                            }
+
+                            if (isCompleted) {
+                              return Positioned(
+                                right: 4,
+                                bottom: 4,
+                                child: Container(
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green.shade100,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Text('✅',
+                                      style: TextStyle(fontSize: 12)),
+                                ),
+                              );
+                            }
+
+                            return null;
+                          },
+                        ),
+                        headerStyle: HeaderStyle(
+                          formatButtonVisible: true,
+                          titleCentered: true,
+                          formatButtonShowsNext: false,
+                          titleTextStyle: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.white : Colors.black,
+                          ),
+                          formatButtonDecoration: BoxDecoration(
+                            border: Border.all(color: Colors.blue.shade300),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          leftChevronIcon: Icon(
+                            Icons.chevron_left_rounded,
+                            color: isDark ? Colors.white : Colors.black,
+                          ),
+                          rightChevronIcon: Icon(
+                            Icons.chevron_right_rounded,
+                            color: isDark ? Colors.white : Colors.black,
                           ),
                         ),
                       );
-                    }
-                  }
-                },
-                onFormatChanged: (format) {
-                  if (_calendarFormat != format) {
-                    setState(() {
-                      _calendarFormat = format;
-                    });
-                  }
-                },
-                onPageChanged: (focusedDay) {
-                  _focusedDay = focusedDay;
-                },
-                calendarStyle: CalendarStyle(
-                  todayDecoration: BoxDecoration(
-                    color: Colors.orange.withOpacity(0.5),
-                    shape: BoxShape.circle,
-                  ),
-                  selectedDecoration: const BoxDecoration(
-                    color: Colors.blue,
-                    shape: BoxShape.circle,
-                  ),
-                  markerDecoration: const BoxDecoration(
-                    color: Colors.green,
-                    shape: BoxShape.circle,
+                    },
                   ),
                 ),
-                calendarBuilders: CalendarBuilders(
-                  markerBuilder: (context, date, events) {
-                    final isCompleted = historyProvider.isCompleted(
-                      date.year,
-                      date.month,
-                      date.day,
-                    );
-
-                    final isToday = DateHelper.isToday(
-                      date.year,
-                      date.month,
-                      date.day,
-                    );
-
-                    // 2월 29일 윤년 체크
-                    if (date.month == 2 && date.day == 29) {
-                      if (DateHelper.isLeapYear(date.year)) {
-                        return const Positioned(
-                          right: 1,
-                          bottom: 1,
-                          child: Text('🎵', style: TextStyle(fontSize: 16)),
-                        );
-                      }
-                    }
-
-                    if (isCompleted) {
-                      return const Positioned(
-                        right: 1,
-                        bottom: 1,
-                        child: Text('✅', style: TextStyle(fontSize: 16)),
-                      );
-                    }
-
-                    if (isToday) {
-                      return const Positioned(
-                        right: 1,
-                        bottom: 1,
-                        child: Text('⭕', style: TextStyle(fontSize: 16)),
-                      );
-                    }
-
-                    return null;
-                  },
+                const SizedBox(height: 16),
+                // 범례
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.grey.shade900 : Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Wrap(
+                    alignment: WrapAlignment.spaceAround,
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: [
+                      _buildLegend('✅', '완료', Colors.green),
+                      _buildLegend('⭕', '오늘', Colors.orange),
+                      _buildLegend('⬜', '미완료', Colors.grey),
+                      if (DateHelper.isLeapYear(_focusedDay.year))
+                        _buildLegend('🎵', '찬양', Colors.purple),
+                    ],
+                  ),
                 ),
-                headerStyle: const HeaderStyle(
-                  formatButtonVisible: true,
-                  titleCentered: true,
-                  formatButtonShowsNext: false,
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 20),
-          // 범례
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildLegend('✅', '완료'),
-                _buildLegend('⭕', '오늘'),
-                _buildLegend('⬜', '미완료'),
-                if (DateHelper.isLeapYear(_focusedDay.year))
-                  _buildLegend('🎵', '찬양'),
+                const SizedBox(height: 20),
               ],
             ),
           ),
-          const SizedBox(height: 20),
         ],
       ),
     );
   }
 
-  Widget _buildLegend(String icon, String label) {
-    return Row(
-      children: [
-        Text(icon, style: const TextStyle(fontSize: 20)),
-        const SizedBox(width: 5),
-        Text(label),
-      ],
+  Widget _buildLegend(String icon, String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: color.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(icon, style: const TextStyle(fontSize: 18)),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
