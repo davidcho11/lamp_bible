@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../providers/bible_reading_provider.dart';
 import '../providers/reading_history_provider.dart';
 import '../services/date_helper.dart';
@@ -32,7 +33,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -49,7 +50,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
-                '성경 읽기 캘린더',
+                l10n.calendar,
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -196,7 +197,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                       color: Colors.purple.shade100,
                                       shape: BoxShape.circle,
                                     ),
-                                    child: const Text('🎵',
+                                    child: Text(l10n.playPraise,
                                         style: TextStyle(fontSize: 12)),
                                   ),
                                 );
@@ -269,11 +270,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     spacing: 12,
                     runSpacing: 12,
                     children: [
-                      _buildLegend('✅', '완료', Colors.green),
-                      _buildLegend('⭕', '오늘', Colors.orange),
-                      _buildLegend('⬜', '미완료', Colors.grey),
+                      _buildLegend('✅', l10n.completed, Colors.green),
+                      _buildLegend('⭕', l10n.todayReading, Colors.orange),
+                      _buildLegend('⬜', l10n.remaining, Colors.grey),
                       if (DateHelper.isLeapYear(_focusedDay.year))
-                        _buildLegend('🎵', '찬양', Colors.purple),
+                        _buildLegend('🎵', l10n.playPraise, Colors.purple),
                     ],
                   ),
                 ),

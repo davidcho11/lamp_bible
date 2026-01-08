@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../providers/reading_history_provider.dart';
 import '../services/date_helper.dart';
 import 'calendar_screen.dart';
@@ -52,13 +53,14 @@ class _HomeScreenState extends State<HomeScreen>
     return '😊';
   }
 
-  String _getEncouragementMessage(double progress) {
-    if (progress >= 100) return '완독 축하합니다!';
-    if (progress >= 80) return '거의 다 왔어요!';
-    if (progress >= 60) return '정말 잘하고 있어요!';
-    if (progress >= 40) return '절반을 넘었어요!';
-    if (progress >= 20) return '힘내세요!';
-    return '시작이 반입니다!';
+  String _getEncouragementMessage(BuildContext context, double progress) {
+    final l10n = AppLocalizations.of(context)!;
+    if (progress >= 100) return l10n.encouragement100;
+    if (progress >= 80) return l10n.encouragement80;
+    if (progress >= 60) return l10n.encouragement60;
+    if (progress >= 40) return l10n.encouragement40;
+    if (progress >= 20) return l10n.encouragement20;
+    return l10n.encouragement0;
   }
 
   Color _getProgressColor(double progress) {
@@ -72,11 +74,11 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // 반응형 크기 계산
     final isSmallScreen = screenWidth < 360;
     final titleFontSize = isSmallScreen ? 20.0 : 24.0;
     final circleSize = screenWidth * 0.45 < 160 ? 160.0 : screenWidth * 0.45;
@@ -94,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen>
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
-                '함께 성경 읽기',
+                l10n.homeTitle,
                 style: TextStyle(
                   fontSize: titleFontSize,
                   fontWeight: FontWeight.bold,
@@ -136,7 +138,6 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                     child: Column(
                       children: [
-                        // 년도 표시
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: screenWidth * 0.05,
@@ -153,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen>
                           ),
                           child: FittedBox(
                             child: Text(
-                              '📅 ${year}년 성경 통독',
+                              l10n.yearlyReading(year),
                               style: TextStyle(
                                 fontSize: isSmallScreen ? 16 : 20,
                                 fontWeight: FontWeight.bold,
@@ -163,8 +164,6 @@ class _HomeScreenState extends State<HomeScreen>
                           ),
                         ),
                         SizedBox(height: screenHeight * 0.03),
-
-                        // 진행 현황 카드
                         Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
@@ -189,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen>
                             child: Column(
                               children: [
                                 Text(
-                                  '📊 진행 현황',
+                                  l10n.progressStatus,
                                   style: TextStyle(
                                     fontSize: isSmallScreen ? 16 : 18,
                                     fontWeight: FontWeight.bold,
@@ -200,8 +199,6 @@ class _HomeScreenState extends State<HomeScreen>
                                   ),
                                 ),
                                 SizedBox(height: screenHeight * 0.02),
-
-                                // 원형 프로그레스
                                 SizedBox(
                                   width: circleSize,
                                   height: circleSize,
@@ -237,7 +234,7 @@ class _HomeScreenState extends State<HomeScreen>
                                           ),
                                           FittedBox(
                                             child: Text(
-                                              '$completedDays / $totalDays일',
+                                              '$completedDays / ${l10n.days(totalDays)}',
                                               style: TextStyle(
                                                 fontSize: circleSize * 0.08,
                                                 color: Colors.grey.shade600,
@@ -250,8 +247,6 @@ class _HomeScreenState extends State<HomeScreen>
                                   ),
                                 ),
                                 SizedBox(height: screenHeight * 0.02),
-
-                                // 통계 - 반응형
                                 LayoutBuilder(
                                   builder: (context, constraints) {
                                     return Wrap(
@@ -260,25 +255,28 @@ class _HomeScreenState extends State<HomeScreen>
                                       runSpacing: 8,
                                       children: [
                                         _buildStatCard(
+                                          context,
                                           '✅',
-                                          '완료',
-                                          '$completedDays일',
+                                          l10n.completed,
+                                          l10n.days(completedDays),
                                           Colors.green,
                                           isDark,
                                           isSmallScreen,
                                         ),
                                         _buildStatCard(
+                                          context,
                                           '⏳',
-                                          '남은 날',
-                                          '$uncompletedDays일',
+                                          l10n.remaining,
+                                          l10n.days(uncompletedDays),
                                           Colors.orange,
                                           isDark,
                                           isSmallScreen,
                                         ),
                                         _buildStatCard(
+                                          context,
                                           '🔥',
-                                          '연속',
-                                          '$streakDays일',
+                                          l10n.streak,
+                                          l10n.days(streakDays),
                                           Colors.red,
                                           isDark,
                                           isSmallScreen,
@@ -292,8 +290,6 @@ class _HomeScreenState extends State<HomeScreen>
                           ),
                         ),
                         SizedBox(height: screenHeight * 0.02),
-
-                        // 격려 메시지
                         Container(
                           padding: EdgeInsets.all(screenWidth * 0.05),
                           decoration: BoxDecoration(
@@ -315,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen>
                               const SizedBox(height: 12),
                               FittedBox(
                                 child: Text(
-                                  _getEncouragementMessage(progress),
+                                  _getEncouragementMessage(context, progress),
                                   style: TextStyle(
                                     fontSize: isSmallScreen ? 18 : 22,
                                     fontWeight: FontWeight.bold,
@@ -326,7 +322,7 @@ class _HomeScreenState extends State<HomeScreen>
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                '계속 이어가세요!',
+                                l10n.keepGoing,
                                 style: TextStyle(
                                   fontSize: isSmallScreen ? 13 : 15,
                                   color: Colors.grey.shade600,
@@ -336,12 +332,10 @@ class _HomeScreenState extends State<HomeScreen>
                           ),
                         ),
                         SizedBox(height: screenHeight * 0.03),
-
-                        // 버튼들
                         _buildActionButton(
                           context,
                           icon: Icons.calendar_today_rounded,
-                          label: '오늘의 성경 읽기',
+                          label: l10n.todayReading,
                           gradient: LinearGradient(
                             colors: [
                               Colors.blue.shade400,
@@ -362,7 +356,7 @@ class _HomeScreenState extends State<HomeScreen>
                         _buildActionButton(
                           context,
                           icon: Icons.menu_book_rounded,
-                          label: '성경 66권 개요',
+                          label: l10n.bibleOverview,
                           gradient: LinearGradient(
                             colors: [
                               Colors.green.shade400,
@@ -393,6 +387,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildStatCard(
+    BuildContext context,
     String icon,
     String label,
     String value,

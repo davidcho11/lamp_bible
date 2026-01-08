@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../providers/bible_books_provider.dart';
 import 'book_detail_screen.dart';
 
@@ -30,9 +31,10 @@ class _BibleBooksScreenState extends State<BibleBooksScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('성경 66권 개요'),
+        title: Text(l10n.bibleOverview),
       ),
       body: Column(
         children: [
@@ -71,6 +73,7 @@ class _BibleBooksScreenState extends State<BibleBooksScreen> {
           Expanded(
             child: Consumer<BibleBooksProvider>(
               builder: (context, provider, child) {
+                final l10n = AppLocalizations.of(context)!;
                 if (provider.isLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
@@ -80,11 +83,11 @@ class _BibleBooksScreenState extends State<BibleBooksScreen> {
                     : provider.searchBooks(_searchKeyword);
 
                 if (books.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Text(
-                      '성경책이 없습니다.\n설정에서 CSV 파일을 가져와주세요.',
+                      l10n.noBooks,
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                      style: const TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                   );
                 }
@@ -97,15 +100,15 @@ class _BibleBooksScreenState extends State<BibleBooksScreen> {
                 return ListView(
                   children: [
                     if (oldTestament.isNotEmpty) ...[
-                      //_buildSectionHeader('🔵 구약성경 (${oldTestament.length}권)'),
-                      _buildSectionHeader('🔵 구약성경 (39권)'),
+                      //_buildSectionHeader(l10n.oldTestament(oldTestament.length)),
+                      _buildSectionHeader(l10n.oldTestament(39)),
                       ...oldTestament
                           .map((book) => _buildBookTile(book, context)),
                       const SizedBox(height: 20),
                     ],
                     if (newTestament.isNotEmpty) ...[
-                      //_buildSectionHeader('🔴 신약성경 (${newTestament.length}권)'),
-                      _buildSectionHeader('🔴 신약성경 (27권)'),
+                      //_buildSectionHeader(l10n.newTestament(newTestament.length)),
+                      _buildSectionHeader(l10n.newTestament(27)),
                       ...newTestament
                           .map((book) => _buildBookTile(book, context)),
                     ],
@@ -134,6 +137,7 @@ class _BibleBooksScreenState extends State<BibleBooksScreen> {
   }
 
   Widget _buildBookTile(book, BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
@@ -154,7 +158,7 @@ class _BibleBooksScreenState extends State<BibleBooksScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        subtitle: Text('[${book.chaptersCount}장]'),
+        subtitle: Text('[${l10n.chapters(book.chaptersCount)}]'),
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () {
           Navigator.push(

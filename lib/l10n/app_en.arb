@@ -1,82 +1,142 @@
 {
-"@@locale": "en",
-"appTitle": "Reading the Bible Together",
-"homeTitle": "Reading the Bible Together",
-"yearlyReading": "🗓️ Reading the Bible in {year}",
-"progressStatus": "📊 Progress",
-"completed": "✅ Completed",
-"remaining": "⏳ Days Left",
-"streak": "🔥 Streak",
-"days": "{count} days",
-"keepGoing": "Keep Going!",
-"todayReading": "Today's Bible Reading",
-"bibleOverview": "Overview of the 66 Books of the Bible",
-"settings": "Settings",
-"calendar": "Bible Reading Calendar",
-"readingDetail": "{year}, {month}, {day}",
-"playVideo": "▶ Play YouTube Video",
-"playPraise": "🎵 Watch Praise Videos",
-"myNotes": "✍️ My Devotional Notes",
-"verseReference": "Bible Verse",
-"verseHint": "Example: Genesis 1:1-3",
-"noteContent": "Devotion Content",
-"noteHint": "Write your meditation on today's reading",
-"markCompleted": "Mark Completed",
-"markIncomplete": "Change to Incomplete",
-"save": "Save",
-"saved": "Saved",
-"saveFailed": "Save Failed: {error}",
-"noVideoAvailable": "No videos for this date",
-"oldTestament": "🔵 Old Testament ({count} books)",
-"newTestament": "🔴 New Testament ({count} books)",
-"searchBooks": "Search Bible Books...",
-"noBooks": "No Bibles.\nPlease import a CSV file in Settings.",
-"chapters": "[{count} chapters]",
-"bookOverview": "Bible Book Overview",
-"author": "✍️ Author",
-"viewOverview": "Watch Overview Video",
-"summary": "📝 Summary",
-"myMemo": "✍️ My Notes",
-"memoHint": "Write a note about this Bible book",
-"dataUpdate": "📥 Data Update",
-"dailyReadingUrl": "Daily Reading URL",
-"bibleOverviewUrl": "Bible Overview URL",
-"importFromCsv": "Import from CSV file",
-"importing": "Importing...",
-"importSuccess": "{count} items imported", "importFailed": "Import failed: {error}",
-"yearSettings": "🗓️ Year Settings",
-"currentYear": "Current Year",
-"selectYear": "Select Year",
-"yearChanged": "Changed to {year}",
-"statistics": "📊 Statistics",
-"completionRate": "Annual Completion Rate",
-"appInfo": "ℹ️ App Information",
-"version": "Version",
-"csvFormat": "CSV Format Guide",
-"csvFormatTitle": "CSV File Format",
-"csvFormatDaily": "Daily Reading CSV:",
-"csvFormatBooks": "66 Books of the Bible CSV:",
-"close": "OK",
-"encouragement0": "😊 Getting started is half the battle!",
-"encouragement20": "💪 Cheer up!",
-"encouragement40": "🔥 You're halfway there!",
-"encouragement60": "⭐ You're doing great!",
-"encouragement80": "🎉 You're almost there!",
-"encouragement100": "🏆 Congratulations on completing it!",
-"completedLegend": "✅ Completed",
-"todayLegend": "⭕ Today",
-"incompleteLegend": "⬜ Incomplete",
-"praiseLegend": "🎵 Praise",
-"cannotOpenYoutube": "Cannot open YouTube",
-"enterNoteContent": "Please enter your devotional content",
-"enterMemoContent": "Please enter your note content",
-"themeSettings": "🎨 Theme Settings",
-"themeMode": "Theme Mode",
-"systemTheme": "System Default",
-"lightTheme": "Light Mode",
-"darkTheme": "Dark Mode",
-"downloadingCsv": "Downloading CSV...",
-"downloadSuccess": "Download Success",
-"downloadFailed": "Download Failed",
-"usingLocalCsv": "Using Local CSV File"
+  "@@locale": "en",
+  "appTitle": "Bible Reading Together",
+  "homeTitle": "Bible Reading Together",
+  "yearlyReading": "📅 {year} Bible Reading",
+  "@yearlyReading": {
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "progressStatus": "📊 Progress",
+  "completed": "✅ Completed",
+  "remaining": "⏳ Remaining",
+  "streak": "🔥 Streak",
+  "days": "{count} days",
+  "@days": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "keepGoing": "Keep going!",
+  "todayReading": "Today's Reading",
+  "bibleOverview": "66 Books Overview",
+  "settings": "Settings",
+  "calendar": "Bible Calendar",
+  "readingDetail": "{year}/{month}/{day}",
+  "@readingDetail": {
+    "placeholders": {
+      "year": {"type": "int"},
+      "month": {"type": "int"},
+      "day": {"type": "int"}
+    }
+  },
+  "playVideo": "▶ Play YouTube Video",
+  "playPraise": "🎵 Play Praise Video",
+  "myNotes": "✍️ My Notes",
+  "verseReference": "Verse Reference",
+  "verseHint": "e.g., Genesis 1:1-3",
+  "noteContent": "Note Content",
+  "noteHint": "Write your reflections here",
+  "markCompleted": "Mark as Complete",
+  "markIncomplete": "Mark Incomplete",
+  "save": "Save",
+  "saved": "Saved",
+  "saveFailed": "Save failed: {error}",
+  "@saveFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "noVideoAvailable": "No video available for this date",
+  "oldTestament": "🔵 Old Testament ({count} books)",
+  "@oldTestament": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "newTestament": "🔴 New Testament ({count} books)",
+  "@newTestament": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "searchBooks": "Search books...",
+  "noBooks": "No books available.\nPlease import CSV in settings.",
+  "chapters": "[{count} chapters]",
+  "@chapters": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "bookOverview": "Book Overview",
+  "author": "✍️ Author",
+  "viewOverview": "View Overview Video",
+  "summary": "📝 Summary",
+  "myMemo": "✍️ My Memo",
+  "memoHint": "Write notes about this book",
+  "dataUpdate": "📥 Data Update",
+  "dailyReadingUrl": "Daily Reading URLs",
+  "bibleOverviewUrl": "Bible Overview URLs",
+  "importFromCsv": "Import from CSV",
+  "importing": "Importing...",
+  "importSuccess": "{count} items imported",
+  "@importSuccess": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "importFailed": "Import failed: {error}",
+  "@importFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "yearSettings": "🗓️ Year Settings",
+  "currentYear": "Current Year",
+  "selectYear": "Select Year",
+  "yearChanged": "Changed to {year}",
+  "@yearChanged": {
+    "placeholders": {
+      "year": {"type": "int"}
+    }
+  },
+  "statistics": "📊 Statistics",
+  "completionRate": "Annual Completion Rate",
+  "appInfo": "ℹ️ App Info",
+  "version": "Version",
+  "csvFormat": "CSV Format Guide",
+  "csvFormatTitle": "CSV File Format",
+  "csvFormatDaily": "Daily Reading CSV:",
+  "csvFormatBooks": "Bible Books CSV:",
+  "close": "Close",
+  "encouragement0": "😊 Starting is half the battle!",
+  "encouragement20": "💪 Keep it up!",
+  "encouragement40": "🔥 You've passed halfway!",
+  "encouragement60": "⭐ You're doing great!",
+  "encouragement80": "🎉 Almost there!",
+  "encouragement100": "🏆 Congratulations on completion!",
+  "completedLegend": "✅ Completed",
+  "todayLegend": "⭕ Today",
+  "incompleteLegend": "⬜ Incomplete",
+  "praiseLegend": "🎵 Praise",
+  "cannotOpenYoutube": "Cannot open YouTube",
+  "enterNoteContent": "Please enter note content",
+  "enterMemoContent": "Please enter memo content",
+  "themeSettings": "🎨 Theme Settings",
+  "themeMode": "Theme Mode",
+  "systemTheme": "System Default",
+  "lightTheme": "Light Mode",
+  "darkTheme": "Dark Mode",
+  "downloadingCsv": "Downloading CSV...",
+  "downloadSuccess": "Download successful",
+  "downloadFailed": "Download failed",
+  "usingLocalCsv": "Using local CSV file",
+  "year": "{year}",
+  "cancel": "Cancel",
+  "reset": "Reset"
 }

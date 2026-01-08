@@ -79,5 +79,8 @@
   "downloadingCsv": "CSV 다운로드 중...",
   "downloadSuccess": "다운로드 성공",
   "downloadFailed": "다운로드 실패",
-  "usingLocalCsv": "로컬 CSV 파일 사용"
+  "usingLocalCsv": "로컬 CSV 파일 사용",
+  "year": "{year}년",
+  "cancel": "취소",
+  "reset": "초기화"
 }

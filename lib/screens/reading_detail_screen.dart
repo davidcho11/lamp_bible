@@ -5,6 +5,7 @@ import '../models/bible_reading.dart';
 import '../models/user_note.dart';
 import '../providers/reading_history_provider.dart';
 import '../services/database_helper.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReadingDetailScreen extends StatefulWidget {
   final int year;
@@ -76,7 +77,8 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('YouTube를 열 수 없습니다')),
+          SnackBar(
+              content: Text(AppLocalizations.of(context)!.cannotOpenYoutube)),
         );
       }
     }
@@ -85,7 +87,7 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
   Future<void> _saveNote() async {
     if (_noteController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('묵상 내용을 입력해주세요')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.enterMemoContent)),
       );
       return;
     }
@@ -119,11 +121,11 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Row(
+            content: Row(
               children: [
-                Icon(Icons.check_circle, color: Colors.white),
-                SizedBox(width: 8),
-                Text('저장되었습니다'),
+                const Icon(Icons.check_circle, color: Colors.white),
+                const SizedBox(width: 8),
+                Text(AppLocalizations.of(context)!.saved),
               ],
             ),
             backgroundColor: Colors.green,
@@ -135,9 +137,9 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('저장 실패: $e')),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context)!.saveFailed(e.toString())),
+        ));
       }
     }
   }
@@ -158,6 +160,7 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final isSmallScreen = screenWidth < 360;
@@ -181,7 +184,7 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
             flexibleSpace: FlexibleSpaceBar(
               title: FittedBox(
                 child: Text(
-                  '${widget.year}년 ${widget.month}월 ${widget.day}일',
+                  l10n.readingDetail(widget.year, widget.month, widget.day),
                   style: TextStyle(
                     fontSize: isSmallScreen ? 18 : 20,
                     fontWeight: FontWeight.bold,
@@ -290,8 +293,8 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
                                 Flexible(
                                   child: Text(
                                     widget.reading!.isSpecial
-                                        ? '찬양 영상 보기'
-                                        : 'YouTube 영상 재생',
+                                        ? l10n.playPraise
+                                        : l10n.playVideo,
                                     style: TextStyle(
                                       fontSize: isSmallScreen ? 16 : 18,
                                       fontWeight: FontWeight.bold,
@@ -326,7 +329,7 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
                           ),
                           SizedBox(height: isSmallScreen ? 12 : 16),
                           Text(
-                            '이 날짜에 대한 영상이 없습니다',
+                            l10n.noVideoAvailable,
                             style: TextStyle(
                               fontSize: isSmallScreen ? 14 : 16,
                               color: Colors.grey.shade600,
@@ -341,7 +344,7 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
 
                   // 묵상 노트 섹션
                   Text(
-                    '✍️ 나의 묵상 노트',
+                    '✍️ ${l10n.myNotes}',
                     style: TextStyle(
                       fontSize: isSmallScreen ? 18 : 22,
                       fontWeight: FontWeight.bold,
@@ -368,10 +371,10 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
                           controller: _verseController,
                           style: TextStyle(fontSize: isSmallScreen ? 14 : 16),
                           decoration: InputDecoration(
-                            labelText: '성경 구절',
+                            labelText: l10n.verseReference,
                             labelStyle:
                                 TextStyle(fontSize: isSmallScreen ? 13 : 15),
-                            hintText: '예: 창세기 1:1-3',
+                            hintText: l10n.verseHint,
                             hintStyle:
                                 TextStyle(fontSize: isSmallScreen ? 12 : 14),
                             prefixIcon: Icon(
@@ -397,10 +400,10 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
                           controller: _noteController,
                           style: TextStyle(fontSize: isSmallScreen ? 14 : 16),
                           decoration: InputDecoration(
-                            labelText: '묵상 내용',
+                            labelText: l10n.noteContent,
                             labelStyle:
                                 TextStyle(fontSize: isSmallScreen ? 13 : 15),
-                            hintText: '오늘 읽은 말씀에 대한 묵상을 기록해보세요',
+                            hintText: l10n.noteHint,
                             hintStyle:
                                 TextStyle(fontSize: isSmallScreen ? 12 : 14),
                             prefixIcon: Icon(
@@ -438,7 +441,9 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
                               icon: _isCompleted
                                   ? Icons.check_circle
                                   : Icons.circle_outlined,
-                              label: _isCompleted ? '완료됨' : '완료 표시',
+                              label: _isCompleted
+                                  ? l10n.completed
+                                  : l10n.markCompleted,
                               gradient: LinearGradient(
                                 colors: _isCompleted
                                     ? [
@@ -456,7 +461,7 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
                             _buildButton(
                               onTap: _saveNote,
                               icon: Icons.save_outlined,
-                              label: '저장',
+                              label: l10n.save,
                               gradient: LinearGradient(
                                 colors: [
                                   Colors.blue.shade400,
@@ -476,7 +481,9 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
                                 icon: _isCompleted
                                     ? Icons.check_circle
                                     : Icons.circle_outlined,
-                                label: _isCompleted ? '완료됨' : '완료 표시',
+                                label: _isCompleted
+                                    ? l10n.completed
+                                    : l10n.markCompleted,
                                 gradient: LinearGradient(
                                   colors: _isCompleted
                                       ? [
@@ -496,7 +503,7 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
                               child: _buildButton(
                                 onTap: _saveNote,
                                 icon: Icons.save_outlined,
-                                label: '저장',
+                                label: l10n.save,
                                 gradient: LinearGradient(
                                   colors: [
                                     Colors.blue.shade400,

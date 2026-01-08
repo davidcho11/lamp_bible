@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/book_note.dart';
 import '../models/bible_book.dart';
 import '../services/database_helper.dart';
@@ -52,7 +53,8 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('YouTube를 열 수 없습니다')),
+          SnackBar(
+              content: Text(AppLocalizations.of(context)!.cannotOpenYoutube)),
         );
       }
     }
@@ -61,7 +63,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   Future<void> _saveNote() async {
     if (_noteController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('메모 내용을 입력해주세요')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.enterMemoContent)),
       );
       return;
     }
@@ -90,20 +92,21 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('저장되었습니다')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.saved)),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('저장 실패: $e')),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context)!.saveFailed(e.toString())),
+        ));
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.book.koreanName),
@@ -141,7 +144,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    '📖 ${widget.book.testament == 'OLD' ? '구약성경' : '신약성경'} ${widget.book.bookNumber}권 / ${widget.book.chaptersCount}장',
+                    '📖 ${widget.book.testament == 'OLD' ? l10n.oldTestament(widget.book.bookNumber) : l10n.newTestament(widget.book.bookNumber)} ${l10n.chapters(widget.book.chaptersCount)}',
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.grey,
@@ -154,7 +157,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
 
             // 저자 정보
             if (widget.book.author != null) ...[
-              _buildInfoRow('✍️ 저자', widget.book.author!),
+              _buildInfoRow('✍️ ${l10n.author}', widget.book.author!),
               const SizedBox(height: 15),
             ],
 
@@ -165,9 +168,9 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
               child: ElevatedButton.icon(
                 onPressed: _launchYouTube,
                 icon: const Icon(Icons.play_circle_filled, size: 30),
-                label: const Text(
-                  '개요 영상 보기',
-                  style: TextStyle(fontSize: 18),
+                label: Text(
+                  l10n.viewOverview,
+                  style: const TextStyle(fontSize: 18),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
@@ -179,9 +182,9 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
 
             // 요약
             if (widget.book.summary != null) ...[
-              const Text(
-                '📝 요약',
-                style: TextStyle(
+              Text(
+                '📝 ${l10n.summary}',
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -205,9 +208,9 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
             ],
 
             // 나의 메모
-            const Text(
-              '✍️ 나의 메모',
-              style: TextStyle(
+            Text(
+              '✍️ ${l10n.myMemo}',
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -216,9 +219,9 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
 
             TextField(
               controller: _noteController,
-              decoration: const InputDecoration(
-                hintText: '이 성경책에 대한 메모를 작성해보세요',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                hintText: l10n.memoHint,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 6,
             ),
@@ -230,9 +233,9 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
               child: ElevatedButton.icon(
                 onPressed: _saveNote,
                 icon: const Icon(Icons.save),
-                label: const Text(
-                  '저장',
-                  style: TextStyle(fontSize: 16),
+                label: Text(
+                  l10n.save,
+                  style: const TextStyle(fontSize: 16),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,

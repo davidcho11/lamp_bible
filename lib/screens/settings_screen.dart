@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../providers/csv_import_provider.dart';
 import '../providers/bible_reading_provider.dart';
 import '../providers/bible_books_provider.dart';
@@ -11,6 +12,7 @@ class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   Future<void> _showYearPicker(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final historyProvider = context.read<ReadingHistoryProvider>();
     final currentYear = historyProvider.currentYear;
 
@@ -18,13 +20,13 @@ class SettingsScreen extends StatelessWidget {
       context: context,
       builder: (context) {
         return SimpleDialog(
-          title: const Text('년도 선택'),
+          title: Text(l10n.selectYear),
           children: List.generate(10, (index) {
             final year = DateTime.now().year - 5 + index;
             return SimpleDialogOption(
               onPressed: () => Navigator.pop(context, year),
               child: Text(
-                '$year년',
+                '${l10n.year(year)}',
                 style: TextStyle(
                   fontWeight:
                       year == currentYear ? FontWeight.bold : FontWeight.normal,
@@ -41,7 +43,7 @@ class SettingsScreen extends StatelessWidget {
       await historyProvider.setYear(selectedYear);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$selectedYear년으로 변경되었습니다')),
+          SnackBar(content: Text(l10n.yearChanged(selectedYear))),
         );
       }
     }
@@ -49,12 +51,13 @@ class SettingsScreen extends StatelessWidget {
 
   Future<void> _showThemeDialog(BuildContext context) async {
     final themeProvider = context.read<ThemeProvider>();
+    final l10n = AppLocalizations.of(context)!;
 
     await showDialog(
       context: context,
       builder: (context) {
         return SimpleDialog(
-          title: const Text('테마 선택'),
+          title: Text(l10n.themeMode),
           children: [
             SimpleDialogOption(
               onPressed: () {
@@ -71,7 +74,7 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    '시스템 기본값',
+                    l10n.systemTheme,
                     style: TextStyle(
                       fontWeight: themeProvider.themeMode == ThemeMode.system
                           ? FontWeight.bold
@@ -96,7 +99,7 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    '라이트 모드',
+                    l10n.lightTheme,
                     style: TextStyle(
                       fontWeight: themeProvider.themeMode == ThemeMode.light
                           ? FontWeight.bold
@@ -121,7 +124,7 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    '다크 모드',
+                    l10n.darkTheme,
                     style: TextStyle(
                       fontWeight: themeProvider.themeMode == ThemeMode.dark
                           ? FontWeight.bold
@@ -143,6 +146,7 @@ class SettingsScreen extends StatelessWidget {
     String message,
     VoidCallback onConfirm,
   ) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
@@ -158,14 +162,14 @@ class SettingsScreen extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('취소'),
+              child: Text(l10n.cancel),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
               style: TextButton.styleFrom(
                 foregroundColor: Colors.red,
               ),
-              child: const Text('초기화'),
+              child: Text(l10n.reset),
             ),
           ],
         );
