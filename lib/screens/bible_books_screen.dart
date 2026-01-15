@@ -32,9 +32,13 @@ class _BibleBooksScreenState extends State<BibleBooksScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backLabel = MaterialLocalizations.of(context).backButtonTooltip;
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.bibleOverview),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
@@ -98,6 +102,7 @@ class _BibleBooksScreenState extends State<BibleBooksScreen> {
                     books.where((b) => b.testament == 'NEW').toList();
 
                 return ListView(
+                  padding: const EdgeInsets.only(bottom: 16),
                   children: [
                     if (oldTestament.isNotEmpty) ...[
                       //_buildSectionHeader(l10n.oldTestament(oldTestament.length)),
@@ -118,6 +123,57 @@ class _BibleBooksScreenState extends State<BibleBooksScreen> {
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Container(
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: isDark ? Colors.grey.shade900 : Colors.white,
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                blurRadius: 18,
+                offset: const Offset(0, 10),
+              ),
+            ],
+            border: Border.all(
+              color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+              width: 1,
+            ),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => Navigator.maybePop(context),
+              borderRadius: BorderRadius.circular(22),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.arrow_back_rounded,
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      backLabel,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: isDark
+                            ? Colors.grey.shade200
+                            : Colors.grey.shade700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

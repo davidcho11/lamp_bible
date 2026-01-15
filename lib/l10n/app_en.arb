@@ -11,9 +11,9 @@
     }
   },
   "progressStatus": "📊 Progress",
-  "completed": "✅ Completed",
-  "remaining": "⏳ Remaining",
-  "streak": "🔥 Streak",
+  "completed": "Completed",
+  "remaining": "Remaining",
+  "streak": "Streak",
   "days": "{count} days",
   "@days": {
     "placeholders": {
@@ -37,7 +37,7 @@
   },
   "playVideo": "▶ Play YouTube Video",
   "playPraise": "🎵 Play Praise Video",
-  "myNotes": "✍️ My Notes",
+  "myNotes": "My Notes",
   "verseReference": "Verse Reference",
   "verseHint": "e.g., Genesis 1:1-3",
   "noteContent": "Note Content",

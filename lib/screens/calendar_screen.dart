@@ -34,6 +34,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
+    final backLabel = MaterialLocalizations.of(context).backButtonTooltip;
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -43,11 +44,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
             pinned: true,
             elevation: 0,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios_rounded,
-                  color: Theme.of(context).textTheme.bodyLarge?.color),
-              onPressed: () => Navigator.pop(context),
-            ),
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 l10n.calendar,
@@ -85,6 +81,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         lastDay: DateTime(_focusedDay.year, 12, 31),
                         focusedDay: _focusedDay,
                         calendarFormat: _calendarFormat,
+                        rowHeight: 52,
+                        daysOfWeekHeight: 32,
                         selectedDayPredicate: (day) =>
                             isSameDay(_selectedDay, day),
                         onDaySelected: (selectedDay, focusedDay) async {
@@ -126,23 +124,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           _focusedDay = focusedDay;
                         },
                         calendarStyle: CalendarStyle(
-                          cellMargin: const EdgeInsets.all(6),
+                          cellMargin: const EdgeInsets.all(4),
+                          outsideDaysVisible: false,
                           todayDecoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.orange.shade300,
-                                Colors.orange.shade400,
-                              ],
-                            ),
+                            color: Colors.orange.shade400,
                             shape: BoxShape.circle,
                           ),
                           selectedDecoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.blue.shade400,
-                                Colors.blue.shade600,
-                              ],
-                            ),
+                            color: Colors.blue.shade600,
                             shape: BoxShape.circle,
                           ),
                           todayTextStyle: const TextStyle(
@@ -166,21 +155,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                 ? Colors.grey.shade400
                                 : Colors.grey.shade700,
                             fontWeight: FontWeight.bold,
+                            height: 1.2,
                           ),
                           weekendStyle: TextStyle(
                             color: Colors.red.shade300,
                             fontWeight: FontWeight.bold,
+                            height: 1.2,
                           ),
                         ),
                         calendarBuilders: CalendarBuilders(
                           markerBuilder: (context, date, events) {
                             final isCompleted = historyProvider.isCompleted(
-                              date.year,
-                              date.month,
-                              date.day,
-                            );
-
-                            final isToday = DateHelper.isToday(
                               date.year,
                               date.month,
                               date.day,
@@ -224,17 +209,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           },
                         ),
                         headerStyle: HeaderStyle(
-                          formatButtonVisible: true,
+                          formatButtonVisible: false,
                           titleCentered: true,
-                          formatButtonShowsNext: false,
+                          headerPadding:
+                              const EdgeInsets.symmetric(vertical: 8),
                           titleTextStyle: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: isDark ? Colors.white : Colors.black,
-                          ),
-                          formatButtonDecoration: BoxDecoration(
-                            border: Border.all(color: Colors.blue.shade300),
-                            borderRadius: BorderRadius.circular(12),
                           ),
                           leftChevronIcon: Icon(
                             Icons.chevron_left_rounded,
@@ -249,69 +231,120 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     },
                   ),
                 ),
-                const SizedBox(height: 16),
-                // 범례
+                const SizedBox(height: 12),
+                // 범례 (간략 표시)
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16),
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
                   decoration: BoxDecoration(
                     color: isDark ? Colors.grey.shade900 : Colors.white,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        blurRadius: 10,
+                        color: Colors.grey.withOpacity(0.08),
+                        blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
                     ],
                   ),
                   child: Wrap(
-                    alignment: WrapAlignment.spaceAround,
+                    alignment: WrapAlignment.center,
                     spacing: 12,
-                    runSpacing: 12,
+                    runSpacing: 6,
                     children: [
-                      _buildLegend('✅', l10n.completed, Colors.green),
-                      _buildLegend('⭕', l10n.todayReading, Colors.orange),
-                      _buildLegend('⬜', l10n.remaining, Colors.grey),
+                      _buildLegendChip(l10n.completed, Colors.green),
+                      _buildLegendChip(l10n.todayReading, Colors.orange),
+                      _buildLegendChip(l10n.remaining, Colors.grey),
                       if (DateHelper.isLeapYear(_focusedDay.year))
-                        _buildLegend('🎵', l10n.playPraise, Colors.purple),
+                        _buildLegendChip(l10n.playPraise, Colors.purple),
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
               ],
             ),
           ),
         ],
       ),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Container(
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: isDark ? Colors.grey.shade900 : Colors.white,
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                blurRadius: 18,
+                offset: const Offset(0, 10),
+              ),
+            ],
+            border: Border.all(
+              color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+              width: 1,
+            ),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => Navigator.maybePop(context),
+              borderRadius: BorderRadius.circular(22),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.arrow_back_rounded,
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      backLabel,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: isDark
+                            ? Colors.grey.shade200
+                            : Colors.grey.shade700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _buildLegend(String icon, String label, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: color.withOpacity(0.3),
-          width: 1,
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(icon, style: const TextStyle(fontSize: 18)),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: color,
-            ),
+  Widget _buildLegendChip(String label, Color color) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
           ),
-        ],
-      ),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: color,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -161,6 +161,7 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
+    final backLabel = MaterialLocalizations.of(context).backButtonTooltip;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final isSmallScreen = screenWidth < 360;
@@ -176,11 +177,6 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
             pinned: true,
             elevation: 0,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios_rounded,
-                  color: Theme.of(context).textTheme.bodyLarge?.color),
-              onPressed: () => Navigator.pop(context),
-            ),
             flexibleSpace: FlexibleSpaceBar(
               title: FittedBox(
                 child: Text(
@@ -197,9 +193,11 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: horizontalPadding,
-                vertical: 16,
+              padding: EdgeInsets.fromLTRB(
+                horizontalPadding,
+                16,
+                horizontalPadding,
+                32,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -430,94 +428,6 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
                   ),
                   SizedBox(height: screenHeight * 0.02),
 
-                  // 버튼들
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      if (constraints.maxWidth < 400) {
-                        return Column(
-                          children: [
-                            _buildButton(
-                              onTap: _toggleCompleted,
-                              icon: _isCompleted
-                                  ? Icons.check_circle
-                                  : Icons.circle_outlined,
-                              label: _isCompleted
-                                  ? l10n.completed
-                                  : l10n.markCompleted,
-                              gradient: LinearGradient(
-                                colors: _isCompleted
-                                    ? [
-                                        Colors.green.shade400,
-                                        Colors.green.shade600
-                                      ]
-                                    : [
-                                        Colors.grey.shade400,
-                                        Colors.grey.shade600
-                                      ],
-                              ),
-                              isSmallScreen: isSmallScreen,
-                            ),
-                            const SizedBox(height: 12),
-                            _buildButton(
-                              onTap: _saveNote,
-                              icon: Icons.save_outlined,
-                              label: l10n.save,
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.blue.shade400,
-                                  Colors.blue.shade600
-                                ],
-                              ),
-                              isSmallScreen: isSmallScreen,
-                            ),
-                          ],
-                        );
-                      } else {
-                        return Row(
-                          children: [
-                            Expanded(
-                              child: _buildButton(
-                                onTap: _toggleCompleted,
-                                icon: _isCompleted
-                                    ? Icons.check_circle
-                                    : Icons.circle_outlined,
-                                label: _isCompleted
-                                    ? l10n.completed
-                                    : l10n.markCompleted,
-                                gradient: LinearGradient(
-                                  colors: _isCompleted
-                                      ? [
-                                          Colors.green.shade400,
-                                          Colors.green.shade600
-                                        ]
-                                      : [
-                                          Colors.grey.shade400,
-                                          Colors.grey.shade600
-                                        ],
-                                ),
-                                isSmallScreen: isSmallScreen,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _buildButton(
-                                onTap: _saveNote,
-                                icon: Icons.save_outlined,
-                                label: l10n.save,
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.blue.shade400,
-                                    Colors.blue.shade600
-                                  ],
-                                ),
-                                isSmallScreen: isSmallScreen,
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                    },
-                  ),
                   SizedBox(height: screenHeight * 0.02),
                 ],
               ),
@@ -525,51 +435,95 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
           ),
         ],
       ),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Container(
+          margin: EdgeInsets.fromLTRB(
+            horizontalPadding,
+            0,
+            horizontalPadding,
+            screenHeight * 0.02,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: isDark ? Colors.grey.shade900 : Colors.white,
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                blurRadius: 18,
+                offset: const Offset(0, 10),
+              ),
+            ],
+            border: Border.all(
+              color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+              width: 1,
+            ),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: Row(
+              children: [
+                _buildFooterAction(
+                  icon: Icons.arrow_back_rounded,
+                  label: backLabel,
+                  onTap: () => Navigator.maybePop(context),
+                  color: isDark ? Colors.white : Colors.black,
+                  labelColor:
+                      isDark ? Colors.grey.shade200 : Colors.grey.shade700,
+                ),
+                _buildFooterAction(
+                  icon:
+                      _isCompleted ? Icons.check_circle : Icons.circle_outlined,
+                  label: _isCompleted ? l10n.completed : l10n.markCompleted,
+                  onTap: _toggleCompleted,
+                  color: _isCompleted ? Colors.green.shade500 : Colors.grey,
+                  labelColor:
+                      _isCompleted ? Colors.green.shade600 : Colors.grey,
+                ),
+                _buildFooterAction(
+                  icon: Icons.save_outlined,
+                  label: l10n.save,
+                  onTap: _saveNote,
+                  color: Colors.blue.shade500,
+                  labelColor: Colors.blue.shade600,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _buildButton({
+  Widget _buildFooterAction({
     required VoidCallback onTap,
     required IconData icon,
     required String label,
-    required Gradient gradient,
-    required bool isSmallScreen,
+    required Color color,
+    required Color labelColor,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: gradient,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: gradient.colors.first.withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+    return Expanded(
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(18),
           child: Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: isSmallScreen ? 12 : 16,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, color: Colors.white, size: isSmallScreen ? 20 : 24),
-                SizedBox(width: isSmallScreen ? 6 : 8),
-                Flexible(
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: isSmallScreen ? 14 : 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                Icon(icon, color: color, size: 22),
+                const SizedBox(height: 6),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: labelColor,
                   ),
                 ),
               ],

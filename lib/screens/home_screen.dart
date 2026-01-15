@@ -105,18 +105,6 @@ class _HomeScreenState extends State<HomeScreen>
               ),
               centerTitle: true,
             ),
-            actions: [
-              IconButton(
-                icon: Icon(Icons.settings_outlined,
-                    color: Theme.of(context).textTheme.bodyLarge?.color),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                  );
-                },
-              ),
-            ],
           ),
           SliverToBoxAdapter(
             child: FadeTransition(
@@ -332,48 +320,6 @@ class _HomeScreenState extends State<HomeScreen>
                           ),
                         ),
                         SizedBox(height: screenHeight * 0.03),
-                        _buildActionButton(
-                          context,
-                          icon: Icons.calendar_today_rounded,
-                          label: l10n.todayReading,
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.blue.shade400,
-                              Colors.blue.shade600
-                            ],
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const CalendarScreen(),
-                              ),
-                            );
-                          },
-                          isSmallScreen: isSmallScreen,
-                        ),
-                        const SizedBox(height: 12),
-                        _buildActionButton(
-                          context,
-                          icon: Icons.menu_book_rounded,
-                          label: l10n.bibleOverview,
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.green.shade400,
-                              Colors.green.shade600
-                            ],
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const BibleBooksScreen(),
-                              ),
-                            );
-                          },
-                          isSmallScreen: isSmallScreen,
-                        ),
-                        SizedBox(height: screenHeight * 0.02),
                       ],
                     ),
                   );
@@ -382,6 +328,79 @@ class _HomeScreenState extends State<HomeScreen>
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Container(
+          margin: EdgeInsets.fromLTRB(
+            horizontalPadding,
+            0,
+            horizontalPadding,
+            screenHeight * 0.02,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: isDark ? Colors.grey.shade900 : Colors.white,
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+            border: Border.all(
+              color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+              width: 1,
+            ),
+          ),
+          child: Row(
+            children: [
+              _buildFooterAction(
+                context,
+                icon: Icons.calendar_today_rounded,
+                label: l10n.todayReading,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const CalendarScreen(),
+                    ),
+                  );
+                },
+                isDark: isDark,
+              ),
+              _buildFooterAction(
+                context,
+                icon: Icons.menu_book_rounded,
+                label: l10n.bibleOverview,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const BibleBooksScreen(),
+                    ),
+                  );
+                },
+                isDark: isDark,
+              ),
+              _buildFooterAction(
+                context,
+                icon: Icons.settings_outlined,
+                label: l10n.settings,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const SettingsScreen(),
+                    ),
+                  );
+                },
+                isDark: isDark,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -442,49 +461,38 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildActionButton(
+  Widget _buildFooterAction(
     BuildContext context, {
     required IconData icon,
     required String label,
-    required Gradient gradient,
     required VoidCallback onTap,
-    required bool isSmallScreen,
+    required bool isDark,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: gradient,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: gradient.colors.first.withOpacity(0.4),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
+    return Expanded(
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              vertical: isSmallScreen ? 14 : 18,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+          borderRadius: BorderRadius.circular(18),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: isSmallScreen ? 24 : 28, color: Colors.white),
-                SizedBox(width: isSmallScreen ? 8 : 12),
-                Flexible(
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: isSmallScreen ? 16 : 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                Icon(
+                  icon,
+                  size: 22,
+                  color: isDark ? Colors.white : Colors.black,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? Colors.grey.shade200 : Colors.grey.shade700,
                   ),
                 ),
               ],
