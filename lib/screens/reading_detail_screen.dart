@@ -168,272 +168,282 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
     final horizontalPadding = screenWidth * 0.05;
 
     return Scaffold(
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          SliverAppBar(
-            expandedHeight: screenHeight * 0.12,
-            floating: false,
-            pinned: true,
-            elevation: 0,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            flexibleSpace: FlexibleSpaceBar(
-              title: FittedBox(
-                child: Text(
-                  l10n.readingDetail(widget.year, widget.month, widget.day),
-                  style: TextStyle(
-                    fontSize: isSmallScreen ? 18 : 20,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).textTheme.bodyLarge?.color,
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        behavior: HitTestBehavior.translucent,
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          slivers: [
+            SliverAppBar(
+              expandedHeight: screenHeight * 0.12,
+              floating: false,
+              pinned: true,
+              elevation: 0,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              automaticallyImplyLeading: false,
+              flexibleSpace: FlexibleSpaceBar(
+                title: FittedBox(
+                  child: Text(
+                    l10n.readingDetail(widget.year, widget.month, widget.day),
+                    style: TextStyle(
+                      fontSize: isSmallScreen ? 18 : 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
                   ),
                 ),
+                centerTitle: true,
               ),
-              centerTitle: true,
             ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                horizontalPadding,
-                16,
-                horizontalPadding,
-                32,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (widget.reading != null) ...[
-                    // 제목 카드
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(screenWidth * 0.05),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: widget.reading!.isSpecial
-                              ? [Colors.purple.shade400, Colors.purple.shade600]
-                              : [Colors.blue.shade400, Colors.blue.shade600],
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  horizontalPadding,
+                  16,
+                  horizontalPadding,
+                  32,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (widget.reading != null) ...[
+                      // 제목 카드
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.all(screenWidth * 0.05),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: widget.reading!.isSpecial
+                                ? [
+                                    Colors.purple.shade400,
+                                    Colors.purple.shade600
+                                  ]
+                                : [Colors.blue.shade400, Colors.blue.shade600],
+                          ),
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                              color: widget.reading!.isSpecial
+                                  ? Colors.purple.withOpacity(0.4)
+                                  : Colors.blue.withOpacity(0.4),
+                              blurRadius: 20,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
                         ),
-                        borderRadius: BorderRadius.circular(24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.reading!.isSpecial ? '🎵' : '📖',
+                              style:
+                                  TextStyle(fontSize: isSmallScreen ? 32 : 40),
+                            ),
+                            SizedBox(height: isSmallScreen ? 8 : 12),
+                            Text(
+                              widget.reading!.title,
+                              style: TextStyle(
+                                fontSize: isSmallScreen ? 20 : 26,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            if (widget.reading!.chapterInfo != null) ...[
+                              SizedBox(height: isSmallScreen ? 6 : 8),
+                              Text(
+                                widget.reading!.chapterInfo!,
+                                style: TextStyle(
+                                  fontSize: isSmallScreen ? 14 : 16,
+                                  color: Colors.white.withOpacity(0.9),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.02),
+
+                      // YouTube 재생 버튼
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFFFF0000), Color(0xFFCC0000)],
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.red.withOpacity(0.4),
+                              blurRadius: 12,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: _launchYouTube,
+                            borderRadius: BorderRadius.circular(20),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: isSmallScreen ? 14 : 18,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.play_circle_filled,
+                                    size: isSmallScreen ? 28 : 32,
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(width: isSmallScreen ? 8 : 12),
+                                  Flexible(
+                                    child: Text(
+                                      widget.reading!.isSpecial
+                                          ? l10n.playPraise
+                                          : l10n.playVideo,
+                                      style: TextStyle(
+                                        fontSize: isSmallScreen ? 16 : 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.03),
+                    ] else ...[
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.all(screenWidth * 0.08),
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? Colors.grey.shade800
+                              : Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.videocam_off_outlined,
+                              size: isSmallScreen ? 48 : 64,
+                              color: Colors.grey.shade400,
+                            ),
+                            SizedBox(height: isSmallScreen ? 12 : 16),
+                            Text(
+                              l10n.noVideoAvailable,
+                              style: TextStyle(
+                                fontSize: isSmallScreen ? 14 : 16,
+                                color: Colors.grey.shade600,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.03),
+                    ],
+
+                    // 묵상 노트 섹션
+                    Text(
+                      '✍️ ${l10n.myNotes}',
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 18 : 22,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.02),
+
+                    Container(
+                      decoration: BoxDecoration(
+                        color: isDark ? Colors.grey.shade900 : Colors.white,
+                        borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: widget.reading!.isSpecial
-                                ? Colors.purple.withOpacity(0.4)
-                                : Colors.blue.withOpacity(0.4),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
+                            color: Colors.grey.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            widget.reading!.isSpecial ? '🎵' : '📖',
-                            style: TextStyle(fontSize: isSmallScreen ? 32 : 40),
-                          ),
-                          SizedBox(height: isSmallScreen ? 8 : 12),
-                          Text(
-                            widget.reading!.title,
-                            style: TextStyle(
-                              fontSize: isSmallScreen ? 20 : 26,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          if (widget.reading!.chapterInfo != null) ...[
-                            SizedBox(height: isSmallScreen ? 6 : 8),
-                            Text(
-                              widget.reading!.chapterInfo!,
-                              style: TextStyle(
-                                fontSize: isSmallScreen ? 14 : 16,
-                                color: Colors.white.withOpacity(0.9),
+                          TextField(
+                            controller: _verseController,
+                            style: TextStyle(fontSize: isSmallScreen ? 14 : 16),
+                            decoration: InputDecoration(
+                              labelText: l10n.verseReference,
+                              labelStyle:
+                                  TextStyle(fontSize: isSmallScreen ? 13 : 15),
+                              hintText: l10n.verseHint,
+                              hintStyle:
+                                  TextStyle(fontSize: isSmallScreen ? 12 : 14),
+                              prefixIcon: Icon(
+                                Icons.bookmark_outline,
+                                size: isSmallScreen ? 20 : 24,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              fillColor: isDark
+                                  ? Colors.grey.shade800
+                                  : Colors.grey.shade100,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: isSmallScreen ? 12 : 16,
+                                vertical: isSmallScreen ? 12 : 16,
                               ),
                             ),
-                          ],
+                          ),
+                          SizedBox(height: isSmallScreen ? 8 : 12),
+                          TextField(
+                            controller: _noteController,
+                            style: TextStyle(fontSize: isSmallScreen ? 14 : 16),
+                            decoration: InputDecoration(
+                              labelText: l10n.noteContent,
+                              labelStyle:
+                                  TextStyle(fontSize: isSmallScreen ? 13 : 15),
+                              hintText: l10n.noteHint,
+                              hintStyle:
+                                  TextStyle(fontSize: isSmallScreen ? 12 : 14),
+                              prefixIcon: Icon(
+                                Icons.edit_outlined,
+                                size: isSmallScreen ? 20 : 24,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              fillColor: isDark
+                                  ? Colors.grey.shade800
+                                  : Colors.grey.shade100,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: isSmallScreen ? 12 : 16,
+                                vertical: isSmallScreen ? 12 : 16,
+                              ),
+                            ),
+                            maxLines: isSmallScreen ? 6 : 8,
+                          ),
                         ],
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.02),
 
-                    // YouTube 재생 버튼
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFFF0000), Color(0xFFCC0000)],
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.red.withOpacity(0.4),
-                            blurRadius: 12,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: _launchYouTube,
-                          borderRadius: BorderRadius.circular(20),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: isSmallScreen ? 14 : 18,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.play_circle_filled,
-                                  size: isSmallScreen ? 28 : 32,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(width: isSmallScreen ? 8 : 12),
-                                Flexible(
-                                  child: Text(
-                                    widget.reading!.isSpecial
-                                        ? l10n.playPraise
-                                        : l10n.playVideo,
-                                    style: TextStyle(
-                                      fontSize: isSmallScreen ? 16 : 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.03),
-                  ] else ...[
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(screenWidth * 0.08),
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? Colors.grey.shade800
-                            : Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.videocam_off_outlined,
-                            size: isSmallScreen ? 48 : 64,
-                            color: Colors.grey.shade400,
-                          ),
-                          SizedBox(height: isSmallScreen ? 12 : 16),
-                          Text(
-                            l10n.noVideoAvailable,
-                            style: TextStyle(
-                              fontSize: isSmallScreen ? 14 : 16,
-                              color: Colors.grey.shade600,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.03),
+                    SizedBox(height: screenHeight * 0.02),
                   ],
-
-                  // 묵상 노트 섹션
-                  Text(
-                    '✍️ ${l10n.myNotes}',
-                    style: TextStyle(
-                      fontSize: isSmallScreen ? 18 : 22,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.02),
-
-                  Container(
-                    decoration: BoxDecoration(
-                      color: isDark ? Colors.grey.shade900 : Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        TextField(
-                          controller: _verseController,
-                          style: TextStyle(fontSize: isSmallScreen ? 14 : 16),
-                          decoration: InputDecoration(
-                            labelText: l10n.verseReference,
-                            labelStyle:
-                                TextStyle(fontSize: isSmallScreen ? 13 : 15),
-                            hintText: l10n.verseHint,
-                            hintStyle:
-                                TextStyle(fontSize: isSmallScreen ? 12 : 14),
-                            prefixIcon: Icon(
-                              Icons.bookmark_outline,
-                              size: isSmallScreen ? 20 : 24,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: isDark
-                                ? Colors.grey.shade800
-                                : Colors.grey.shade100,
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: isSmallScreen ? 12 : 16,
-                              vertical: isSmallScreen ? 12 : 16,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: isSmallScreen ? 8 : 12),
-                        TextField(
-                          controller: _noteController,
-                          style: TextStyle(fontSize: isSmallScreen ? 14 : 16),
-                          decoration: InputDecoration(
-                            labelText: l10n.noteContent,
-                            labelStyle:
-                                TextStyle(fontSize: isSmallScreen ? 13 : 15),
-                            hintText: l10n.noteHint,
-                            hintStyle:
-                                TextStyle(fontSize: isSmallScreen ? 12 : 14),
-                            prefixIcon: Icon(
-                              Icons.edit_outlined,
-                              size: isSmallScreen ? 20 : 24,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: isDark
-                                ? Colors.grey.shade800
-                                : Colors.grey.shade100,
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: isSmallScreen ? 12 : 16,
-                              vertical: isSmallScreen ? 12 : 16,
-                            ),
-                          ),
-                          maxLines: isSmallScreen ? 6 : 8,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.02),
-
-                  SizedBox(height: screenHeight * 0.02),
-                ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       bottomNavigationBar: SafeArea(
         top: false,
@@ -467,7 +477,10 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
                 _buildFooterAction(
                   icon: Icons.arrow_back_rounded,
                   label: backLabel,
-                  onTap: () => Navigator.maybePop(context),
+                  onTap: () {
+                    FocusScope.of(context).unfocus();
+                    Navigator.maybePop(context);
+                  },
                   color: isDark ? Colors.white : Colors.black,
                   labelColor:
                       isDark ? Colors.grey.shade200 : Colors.grey.shade700,
@@ -476,7 +489,10 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
                   icon:
                       _isCompleted ? Icons.check_circle : Icons.circle_outlined,
                   label: _isCompleted ? l10n.completed : l10n.markCompleted,
-                  onTap: _toggleCompleted,
+                  onTap: () {
+                    FocusScope.of(context).unfocus();
+                    _toggleCompleted();
+                  },
                   color: _isCompleted ? Colors.green.shade500 : Colors.grey,
                   labelColor:
                       _isCompleted ? Colors.green.shade600 : Colors.grey,
@@ -484,7 +500,10 @@ class _ReadingDetailScreenState extends State<ReadingDetailScreen> {
                 _buildFooterAction(
                   icon: Icons.save_outlined,
                   label: l10n.save,
-                  onTap: _saveNote,
+                  onTap: () {
+                    FocusScope.of(context).unfocus();
+                    _saveNote();
+                  },
                   color: Colors.blue.shade500,
                   labelColor: Colors.blue.shade600,
                 ),

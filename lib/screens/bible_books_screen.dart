@@ -91,7 +91,10 @@ class _BibleBooksScreenState extends State<BibleBooksScreen> {
                     child: Text(
                       l10n.noBooks,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 16, color: Colors.grey),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                      ),
                     ),
                   );
                 }
@@ -183,10 +186,10 @@ class _BibleBooksScreenState extends State<BibleBooksScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          color: Colors.black87,
+          color: Theme.of(context).textTheme.bodyLarge?.color,
         ),
       ),
     );

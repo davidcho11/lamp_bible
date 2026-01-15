@@ -44,6 +44,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             pinned: true,
             elevation: 0,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            automaticallyImplyLeading: false,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 l10n.calendar,
