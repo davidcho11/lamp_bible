@@ -158,7 +158,7 @@ class _BibleBooksScreenState extends State<BibleBooksScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        subtitle: Text('[${l10n.chapters(book.chaptersCount)}]'),
+        subtitle: Text('${l10n.chapters(book.chaptersCount)}'),
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () {
           Navigator.push(

@@ -93,26 +93,26 @@ class _CalendarScreenState extends State<CalendarScreen> {
                               _selectedDay = selectedDay;
                               _focusedDay = focusedDay;
                             });
+                          }
 
-                            final reading =
-                                await readingProvider.getReadingByDate(
-                              selectedDay.month,
-                              selectedDay.day,
-                            );
+                          final reading =
+                              await readingProvider.getReadingByDate(
+                            selectedDay.month,
+                            selectedDay.day,
+                          );
 
-                            if (mounted) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => ReadingDetailScreen(
-                                    year: selectedDay.year,
-                                    month: selectedDay.month,
-                                    day: selectedDay.day,
-                                    reading: reading,
-                                  ),
+                          if (mounted) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ReadingDetailScreen(
+                                  year: selectedDay.year,
+                                  month: selectedDay.month,
+                                  day: selectedDay.day,
+                                  reading: reading,
                                 ),
-                              );
-                            }
+                              ),
+                            );
                           }
                         },
                         onFormatChanged: (format) {
