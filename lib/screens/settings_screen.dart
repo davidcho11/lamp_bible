@@ -612,6 +612,7 @@ class SettingsScreen extends StatelessWidget {
                 title: Text(l10n.copyrightTitle),
                 subtitle: Text(l10n.copyrightValue),
               ),
+              /*
               ListTile(
                 leading: const Icon(Icons.description, color: Colors.green),
                 title: Text(l10n.csvFormat),
@@ -669,6 +670,7 @@ class SettingsScreen extends StatelessWidget {
                   );
                 },
               ),
+              */
             ],
           ),
         ],
